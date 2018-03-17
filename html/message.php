@@ -1,5 +1,6 @@
 ﻿<?php
     include("meal.php");
+    include("weather.php");
     $data = json_decode(file_get_contents('php://input'), true);
     $content = $data["content"];
 
@@ -17,7 +18,7 @@
               "keyboard" :
               {
                 "type" : "buttons",
-                "buttons" : ["급식", "정보"]
+                "buttons" : ["급식", "날씨", "정보"]
               }
             }';
     }
@@ -79,6 +80,53 @@ EOD;
               }
             }';
     }
+    else if ( strpos($content, "날씨") !== false ) {
+        $final = getweather();
+        $weather = $final[8];
+        $final = $final[0] . $final[1] . $final[2] . $final[3] . $final[4] . $final[5] . $final[6] . $final[7];
+        $final = "경기도 김포시 구래동 기준 날씨야~!\\n" . $final;
+        //  날씨
+        // ① 맑음 - sunny.jpg
+        // ② 구름 조금 - cloudy.jpg
+        // ③ 구름 많음 - cloudy.jpg
+        // ④ 흐림 - mist.jpg
+        // ⑤ 비 - rain.jpg
+        // ⑥ 눈/비 - rain.jpg
+        // ⑦ 눈 - snow.jpg
+        $pic_url = "http:\/\/silvermealbot.dothome.co.kr\/images\/";
+        if (strcmp($weather, "맑음") == false){
+            $pic_url = $pic_url . "sunny.jpg";
+        }
+        else if ( strpos($weather, "구름") !== false ){
+            $pic_url = $pic_url . "cloudy.jpg";
+        }
+        else if (strcmp($weather, "흐림") == false){
+            $pic_url = $pic_url . "mist.jpg";
+        }
+        else if ( strpos($weather, "비") !== false ){
+            $pic_url = $pic_url . "rain.jpg";
+        }
+        else if (strcmp($weather, "눈") == false){
+            $pic_url = $pic_url . "snow.jpg";
+        }
+echo <<< EOD
+  {
+      "message": {
+          "text": "$final",
+          "photo": {
+              "url": "$pic_url",
+              "width": 600,
+              "height": 600
+          }
+      },
+      "keyboard" :
+      {
+        "type" : "buttons",
+        "buttons" : ["급식", "날씨", "정보"]
+      }
+  }
+EOD;
+}
     else if ( strpos($content, "정보") !== false ) {
         echo '{
               "message" :
@@ -101,12 +149,12 @@ EOD;
         echo '{
               "message" :
               {
-                "text" : "다양한 방법으로 나를 후원할 수 있오!!\\n계좌이체 : 국민은행 818702-00-018145 여준호\\n비트코인 : 1HnC2Y4tbNgcoErCcoZcmsnRzqcT5rdWon\\n이더리움 : 0x07B8CedbE8Ab83F06DFAdC39991910A4544dE3A1\\n비트코인 캐시 : qzuqmmmdxw5l00fjf7nzl7ur3jv2yr9vfv7f62trc0\\n다른 거래 수단을 원한다면 개발자에게 따로 말해주면 도와줄 수 있을 거야!"
+                "text" : "다양한 방법으로 나를 후원할 수 있어!!\\n계좌이체 : 국민은행 818702-00-018145 여준호\\n비트코인 : 1HnC2Y4tbNgcoErCcoZcmsnRzqcT5rdWon\\n이더리움 : 0x07B8CedbE8Ab83F06DFAdC39991910A4544dE3A1\\n비트코인 캐시 : qzuqmmmdxw5l00fjf7nzl7ur3jv2yr9vfv7f62trc0\\n다른 거래 수단을 원한다면 개발자에게 따로 말해주면 도와줄 수 있을 거야!"
               },
               "keyboard" :
               {
                 "type" : "buttons",
-                "buttons" : ["급식", "정보"]
+                "buttons" : ["급식", "날씨", "정보"]
               }
         }';
     }
@@ -137,7 +185,7 @@ Bitcoin Cash : qzuqmmmdxw5l00fjf7nzl7ur3jv2yr9vfv7f62trc0
               "keyboard" :
               {
                 "type" : "buttons",
-                "buttons" : ["급식", "정보", "처음으로"]
+                "buttons" : ["급식", "날씨", "정보"]
               }
         }';
     }

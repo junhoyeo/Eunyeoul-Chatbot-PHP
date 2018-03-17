@@ -1,11 +1,26 @@
 # Eunyeoul Kakaotalk Mealbot with PHP
-![screenshot](images/screenshot_1.jpg)<br>
+![logo](html/images/logo.jpg)
 
 | Date | Progress |
 | :------------- | :------------- |
 | 2018.03.08 ~ 2018.03.12 | 제작 |
 | 2018.03.13 | 디자인 개선 및 일부 수정 |
 | 2018.03.14 | Github에 공개 |
+| 2018.03.15 ~ 2018.03.17 | 날씨 파싱 기능 추가 |
+
+## 급식 파싱
+![screenshot 1](images/screenshot_1.jpg)<br>
+
+- 나이스에서 은여울중학교 급식 데이터를 파싱
+
+- 오늘 급식, 내일 급식, 내일 모레 급식 지원
+
+## 날씨 파싱
+![screenshot 2](images/screenshot_2.jpg)<br>
+
+- 기상청에서 은여울중학교와 가장 가까운 기상대(경기도 김포시 구래동)의 최신 날씨 데이터를 파싱
+
+- 날씨에 따라 다른 이미지 전송
 
 ## Server
 <b>닷홈(dothome) 무료 웹호스팅을 이용함 : </b><br>
