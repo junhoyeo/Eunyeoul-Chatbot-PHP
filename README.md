@@ -22,6 +22,20 @@
 
 - 날씨에 따라 다른 이미지 전송
 
+## League of Legends 전적 파싱
+
+- 소환사명을 입력받아 [OP.GG](OP.GG)에서 전적 데이터를 파싱
+
+- 유저 랭크에 따라 해당 티어 이미지를 표시
+
+![screenshot 3](images/screenshot_3.jpg)<br>
+
+- 티어 분류가 되지 않은 유저의 경우 위와 같이 표시됨
+
+![screenshot 4](images/screenshot_4.jpg)<br>
+
+- 티어 정보가 존재하는 유저의 경우 위와 같이 표시됨
+
 ## Server
 <b>닷홈(dothome) 무료 웹호스팅을 이용함 : </b><br>
 기본 `html` 폴더를 이 저장소에 있는 것으로 덮어씌우고 사이트 링크를 등록하면 됨

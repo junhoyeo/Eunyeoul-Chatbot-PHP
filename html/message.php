@@ -1,10 +1,12 @@
 ﻿<?php
     include("meal.php");
     include("weather.php");
+    include("lol.php");
+    include("pubg.php");
     $data = json_decode(file_get_contents('php://input'), true);
     $content = $data["content"];
 
-    if ( strpos($content, "대화 시작") !== false ) {
+    if ( strcmp($content, "대화 시작") == false ) {
         echo '{
               "message" :
               {
@@ -18,11 +20,11 @@
               "keyboard" :
               {
                 "type" : "buttons",
-                "buttons" : ["급식", "날씨", "정보"]
+                "buttons" : ["급식", "날씨", "게임 전적", "정보"]
               }
             }';
     }
-    else if ( strpos($content, "오늘 급식") !== false ) {
+    else if ( strcmp($content, "오늘 급식") == false ) {
         $final = getmeal(0);
 echo <<< EOD
     {
@@ -37,7 +39,7 @@ echo <<< EOD
     }
 EOD;
     }
-    else if ( strpos($content, "내일 급식") !== false ) {
+    else if ( strcmp($content, "내일 급식") == false ) {
       $final = getmeal(1);
 echo <<< EOD
   {
@@ -52,7 +54,7 @@ echo <<< EOD
   }
 EOD;
     }
-    else if ( strpos($content, "내일 모레 급식") !== false ) {
+    else if ( strcmp($content, "내일 모레 급식") == false ) {
       $final = getmeal(2);
 echo <<< EOD
   {
@@ -67,7 +69,7 @@ echo <<< EOD
   }
 EOD;
     }
-    else if ( strpos($content, "급식") !== false ) {
+    else if ( strcmp($content, "급식") == false ) {
         echo '{
               "message" :
               {
@@ -80,7 +82,7 @@ EOD;
               }
             }';
     }
-    else if ( strpos($content, "날씨") !== false ) {
+    else if ( strcmp($content, "날씨") == false ) {
         $final = getweather();
         $weather = $final[8];
         $final = $final[0] . $final[1] . $final[2] . $final[3] . $final[4] . $final[5] . $final[6] . $final[7];
@@ -122,12 +124,12 @@ echo <<< EOD
       "keyboard" :
       {
         "type" : "buttons",
-        "buttons" : ["급식", "날씨", "정보"]
+        "buttons" : ["급식", "날씨", "게임 전적", "정보"]
       }
   }
 EOD;
 }
-    else if ( strpos($content, "정보") !== false ) {
+    else if ( strcmp($content, "정보") == false ) {
         echo '{
               "message" :
               {
@@ -145,7 +147,7 @@ EOD;
               }
             }';
     }
-    else if ( strpos($content, "기부하기") !== false ) {
+    else if ( strcmp($content, "기부하기") == false ) {
         echo '{
               "message" :
               {
@@ -154,7 +156,7 @@ EOD;
               "keyboard" :
               {
                 "type" : "buttons",
-                "buttons" : ["급식", "날씨", "정보"]
+                "buttons" : ["급식", "날씨", "게임 전적", "정보"]
               }
         }';
     }
@@ -163,7 +165,7 @@ Bitcoin : 1HnC2Y4tbNgcoErCcoZcmsnRzqcT5rdWon
 Ether : 0x07B8CedbE8Ab83F06DFAdC39991910A4544dE3A1
 Bitcoin Cash : qzuqmmmdxw5l00fjf7nzl7ur3jv2yr9vfv7f62trc0
 */
-    else if ( strpos($content, "처음으로") !== false ) {
+    else if ( strcmp($content, "처음으로") == false ) {
         echo '{
               "message" :
               {
@@ -176,6 +178,118 @@ Bitcoin Cash : qzuqmmmdxw5l00fjf7nzl7ur3jv2yr9vfv7f62trc0
               }
         }';
     }
+    else if ( strcmp($content, "게임 전적") == false ) {
+        echo '{
+              "message" :
+              {
+                "text" : "게임 전적을 확인할 게임을 선택해줘~\\n참고로 검색기록은 에러 발생 시 보다 빠른 대응 및 보안 문제 방지를 위해서 로그에 기록되니 이해해줘!\\n걱정 마. 누가 검색했는지는 알 수가 없거든^^7"
+              },
+              "keyboard" :
+              {
+                "type" : "buttons",
+                "buttons" : ["League of Legends", "PUBG", "처음으로"]
+              }
+        }';
+    }
+    else if ( strcmp($content, "League of Legends") == false ) {
+        echo '{
+              "message" :
+              {
+                "text" : "\'롤\'과 소환사명을 함께 입력해줘~!\\n예시 : \'롤 은여울중학교\'"
+              }
+        }';
+    }
+    else if ( strcmp($content, "PUBG") == false ) {
+        echo '{
+              "message" :
+              {
+                "text" : "배그 전적은 아직 개발중이야 제발 아무것도 누르지마\\n\'백\'과 배그닉넴을 함께 입력해줘~!\\n예시 : \'백 은여울중학교\'"
+              }
+        }';
+    }
+    else if ( strpos($content, "롤") !== false ) {
+          $username = str_replace('롤 ', '', $content);
+          $return = lol_record($username);
+          $logfile = fopen("log.txt", 'a') or die();
+          fwrite($logfile, date("Y.m.d H:i:s",time()) . " '" . $username . "' 소환사를 검색했습니다(롤).\n");
+          // 검색 시간과 기록이 로그 파일에 기록됨
+          fclose($logfile);
+          $record = $return[0];
+          $last = $return[1];
+          $tier = $return[2];
+          if ($last == ''){ // 유효한 소환사명이 아님 => message_button 표시 X
+echo <<< EOD
+    {
+        "message" :
+        {
+            "text" : "$record"
+        },
+        "keyboard" :
+        {
+          "type" : "buttons",
+          "buttons" : ["League of Legends", "PUBG", "처음으로"]
+        }
+    }
+EOD;
+          }
+          else{ // 유효한 소환사명 => message_button 표시 O
+            $pic_url = "http:\/\/silvermealbot.dothome.co.kr\/images\/\/tier\/";
+            $tier = strtolower($tier);
+            $tier = str_replace(' ', '_', $tier);
+            $pic_url = $pic_url . $tier . ".png";
+echo <<< EOD
+    {
+        "message" :
+        {
+            "text" : "$record",
+            "photo" : {
+                "url" : "$pic_url",
+                "width" : 600,
+                "height" : 600
+            },
+            "message_button": {
+                "label": "OP.GG에서 정보 확인",
+                "url": "$last"
+            }
+        },
+        "keyboard" :
+        {
+          "type" : "buttons",
+          "buttons" : ["League of Legends", "PUBG", "처음으로"]
+        }
+    }
+EOD;
+          }
+/*echo <<< EOD
+{
+    "message" :
+    {
+        "text" : "$record\\n$last"
+    },
+    "keyboard" :
+    {
+      "type" : "buttons",
+      "buttons" : ["League of Legends", "PUBG", "처음으로"]
+    }
+}
+EOD;*/
+}
+    else if ( strpos($content, "백") !== false ) {
+        $username = str_replace('백 ', '', $content);
+echo <<< EOD
+{
+  "message" :
+  {
+      "text" : "개발중이야 제발 아무것도 누르지마"
+  },
+  "keyboard" :
+  {
+    "type" : "buttons",
+    "buttons" : ["League of Legends", "PUBG", "처음으로"]
+  }
+}
+EOD;
+}
     else{
         echo '{
               "message" :
@@ -185,7 +299,7 @@ Bitcoin Cash : qzuqmmmdxw5l00fjf7nzl7ur3jv2yr9vfv7f62trc0
               "keyboard" :
               {
                 "type" : "buttons",
-                "buttons" : ["급식", "날씨", "정보"]
+                "buttons" : ["급식", "날씨", "게임 전적", "정보"]
               }
         }';
     }
