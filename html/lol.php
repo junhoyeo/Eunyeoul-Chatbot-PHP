@@ -5,6 +5,7 @@ function lol_record($username){
   $URL = "http://www.op.gg/summoner/userName=" . urlencode($username);
   $snoopy = new Snoopy; // snoopy 생성
   $snoopy->fetch($URL);
+
   //========== 소환사의 레벨을 파싱 ==========
   preg_match('/<span class="Level tip" title="Level">(.*?)<\/span>/is', $snoopy->results, $level);
   $level = $level[0];
@@ -131,7 +132,7 @@ function lol_record($username){
   $record = $record . "킬관여율 : " . $kill_involvement;
   $return[0] = $record; // 전적 정보
   $return[1] = $URL; // OP.GG 링크
-  $return[2] = $rank; // 티어 
+  $return[2] = $rank; // 티어
   return $return;
 }
  ?>
