@@ -20,7 +20,7 @@
               "keyboard" :
               {
                 "type" : "buttons",
-                "buttons" : ["급식", "날씨", "게임 전적", "정보"]
+                "buttons" : ["급식", "날씨", "시간표", "게임 전적", "정보"]
               }
             }';
     }
@@ -124,7 +124,7 @@ echo <<< EOD
       "keyboard" :
       {
         "type" : "buttons",
-        "buttons" : ["급식", "날씨", "게임 전적", "정보"]
+        "buttons" : ["급식", "날씨", "시간표", "게임 전적", "정보"]
       }
   }
 EOD;
@@ -156,7 +156,7 @@ EOD;
               "keyboard" :
               {
                 "type" : "buttons",
-                "buttons" : ["급식", "날씨", "게임 전적", "정보"]
+                "buttons" : ["급식", "날씨", "시간표", "게임 전적", "정보"]
               }
         }';
     }
@@ -290,6 +290,31 @@ echo <<< EOD
 }
 EOD;
 }
+    else if ( strcmp($content, "시간표") == false ) {
+      $table_today = "오늘 3학년 1반 기본 시간표야!\\n";
+      $table[0] = "오늘은 수업이 없습니다."; // 일요일(0)
+      $table[1] = "체육\\n도덕\\n도덕\\n영어\\n미술\\n미술"; // 월요일(1)
+      $table[2] = "수학\\n과학\\n국어\\n사회\\n역사\\n역사"; // 화요일(2)
+      $table[3] = "체육\\n기가\\n과학\\n국어\\n영어\\n진직"; // 수요일(3)
+      $table[4] = "기가\\n기가\\n수학\\n과학\\n영어\\n국어"; // 목요일(4)
+      $table[5] = "사회\\n영어\\n수학\\n국어\\n체육\\n과학"; // 금요일(5)
+      $table[6] = "오늘은 수업이 없습니다."; // 토요일(6)
+      $day = date('w');
+      $table_today = $table_today . $table[$day];
+echo <<< EOD
+{
+  "message" :
+  {
+      "text" : "$table_today"
+  },
+  "keyboard" :
+  {
+    "type" : "buttons",
+    "buttons" : ["급식", "날씨", "시간표", "게임 전적", "정보"]
+  }
+}
+EOD;
+    }
     else{
         echo '{
               "message" :
@@ -299,7 +324,7 @@ EOD;
               "keyboard" :
               {
                 "type" : "buttons",
-                "buttons" : ["급식", "날씨", "게임 전적", "정보"]
+                "buttons" : ["급식", "날씨", "시간표", "게임 전적", "정보"]
               }
         }';
     }
