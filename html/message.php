@@ -3,6 +3,7 @@
     include("weather.php");
     include("lol.php");
     include("pubg.php");
+    include("maple.php");
     $data = json_decode(file_get_contents('php://input'), true);
     $content = $data["content"];
 
@@ -26,6 +27,10 @@
     }
     else if ( strcmp($content, "오늘 급식") == false ) {
         $final = getmeal(0);
+        $logfile = fopen("log.txt", 'a') or die();
+        fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 오늘 급식을 조회했습니다.\n");
+        // 아이피, 검색 시간과 조회 내용이 기록됨
+        fclose($logfile);
 echo <<< EOD
     {
         "message": {
@@ -41,6 +46,10 @@ EOD;
     }
     else if ( strcmp($content, "내일 급식") == false ) {
       $final = getmeal(1);
+      $logfile = fopen("log.txt", 'a') or die();
+      fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 급식을 조회했습니다.\n");
+      // 아이피, 검색 시간과 조회 내용이 기록됨
+      fclose($logfile);
 echo <<< EOD
   {
       "message": {
@@ -56,6 +65,10 @@ EOD;
     }
     else if ( strcmp($content, "내일 모레 급식") == false ) {
       $final = getmeal(2);
+      $logfile = fopen("log.txt", 'a') or die();
+      fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 모레 급식을 조회했습니다.\n");
+      // 아이피, 검색 시간과 조회 내용이 기록됨
+      fclose($logfile);
 echo <<< EOD
   {
       "message": {
@@ -83,6 +96,10 @@ EOD;
             }';
     }
     else if ( strcmp($content, "날씨") == false ) {
+        $logfile = fopen("log.txt", 'a') or die();
+        fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 날씨를 조회했습니다.\n");
+        // 아이피, 검색 시간과 조회 내용이 기록됨
+        fclose($logfile);
         $final = getweather();
         $weather = $final[8];
         $final = $final[0] . $final[1] . $final[2] . $final[3] . $final[4] . $final[5] . $final[6] . $final[7];
@@ -133,7 +150,7 @@ EOD;
         echo '{
               "message" :
               {
-                "text" : "아까도 말했듯이 나는 은여울중학교의 급식봇이야!\\n급식 데이터를 교육청 페이지에서 파싱해와서 알려주는거지.\\n내가 더 성장할 수 있도록 개발자 기부를 통해서 후원해주면 고맙겠엉!!",
+                "text" : "아까도 말했듯이 나는 은여울중학교의 급식봇이야!\\n급식 데이터를 교육청 페이지에서 파싱해와서 알려주는거지.\\n내가 더 성장할 수 있도록 개발자 기부를 통해서 후원해주면 고맙겠엉!!\\n아 그리고 날씨, 시간표, 게임 등 다양한 데이터도 같이 제공해 주고 있어ㅎㅎ",
                 "photo": {
                     "url": "http://silvermealbot.dothome.co.kr/images/gibu.jpg",
                     "width": 600,
@@ -182,12 +199,12 @@ Bitcoin Cash : qzuqmmmdxw5l00fjf7nzl7ur3jv2yr9vfv7f62trc0
         echo '{
               "message" :
               {
-                "text" : "게임 전적을 확인할 게임을 선택해줘~\\n참고로 검색기록은 에러 발생 시 보다 빠른 대응 및 보안 문제 방지를 위해서 로그에 기록되니 이해해줘!\\n걱정 마. 누가 검색했는지는 알 수가 없거든^^7"
+                "text" : "게임 전적을 확인할 게임을 선택해줘~"
               },
               "keyboard" :
               {
                 "type" : "buttons",
-                "buttons" : ["League of Legends", "PUBG", "처음으로"]
+                "buttons" : ["League of Legends", "PUBG", "Maplestory", "처음으로"]
               }
         }';
     }
@@ -207,12 +224,20 @@ Bitcoin Cash : qzuqmmmdxw5l00fjf7nzl7ur3jv2yr9vfv7f62trc0
               }
         }';
     }
+    else if ( strcmp($content, "Maplestory") == false ) {
+        echo '{
+              "message" :
+              {
+                "text" : "\'멮\'과 캐릭터 이름을 함께 입력해줘~!\\n예시 : \'멮 은여울중학교\'"
+              }
+        }';
+    }
     else if ( strpos($content, "롤") !== false ) {
           $username = str_replace('롤 ', '', $content);
           $return = lol_record($username);
           $logfile = fopen("log.txt", 'a') or die();
-          fwrite($logfile, date("Y.m.d H:i:s",time()) . " '" . $username . "' 소환사를 검색했습니다(롤).\n");
-          // 검색 시간과 기록이 로그 파일에 기록됨
+          fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 소환사를 검색했습니다(롤).\n");
+          // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
           fclose($logfile);
           $record = $return[0];
           $last = $return[1];
@@ -227,7 +252,7 @@ echo <<< EOD
         "keyboard" :
         {
           "type" : "buttons",
-          "buttons" : ["League of Legends", "PUBG", "처음으로"]
+          "buttons" : ["League of Legends", "PUBG", "Maplestory", "처음으로"]
         }
     }
 EOD;
@@ -255,7 +280,7 @@ echo <<< EOD
         "keyboard" :
         {
           "type" : "buttons",
-          "buttons" : ["League of Legends", "PUBG", "처음으로"]
+          "buttons" : ["League of Legends", "PUBG", "Maplestory", "처음으로"]
         }
     }
 EOD;
@@ -276,6 +301,10 @@ EOD;*/
 }
     else if ( strpos($content, "백") !== false ) {
         $username = str_replace('백 ', '', $content);
+        $logfile = fopen("log.txt", 'a') or die();
+        fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 닉네임을 검색했습니다(배그).\n");
+        // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
+        fclose($logfile);
 echo <<< EOD
 {
   "message" :
@@ -285,12 +314,76 @@ echo <<< EOD
   "keyboard" :
   {
     "type" : "buttons",
-    "buttons" : ["League of Legends", "PUBG", "처음으로"]
+    "buttons" : ["League of Legends", "PUBG", "Maplestory", "처음으로"]
   }
 }
 EOD;
 }
+else if ( strpos($content, "멮") !== false ) {
+    $username = str_replace('멮 ', '', $content);
+    $final = maplestory($username);
+    $pic_url = $final[0];
+    $logfile = fopen("log.txt", 'a') or die();
+    fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 캐릭터를 검색했습니다(메플).\n");
+    // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
+    fclose($logfile);
+    if ($final[1]=='') {
+      echo '{
+            "message" :
+            {
+              "text" : "검색결과가 없습니다."
+            },
+            "keyboard" :
+            {
+                  "type" : "buttons",
+                  "buttons" : ["League of Legends", "PUBG", "Maplestory", "처음으로"]
+            }
+      }';
+    }
+    else {
+      $result = "캐릭터 이름 : " . $final[1] . "\\n";
+      $result = $result . "직업 : " . $final[2] . "\\n";
+      $result = $result . "레벨 : " . $final[3] . "\\n";
+      $result = $result . "경험치 : " . $final[4] . "\\n";
+      $result = $result . "인기도 : " . $final[5];
+echo <<< EOD
+  {
+      "message" :
+      {
+          "text" : "$result",
+          "photo" : {
+              "url" : "$pic_url",
+              "width" : 600,
+              "height" : 600
+          }
+      },
+      "keyboard" :
+      {
+            "type" : "buttons",
+            "buttons" : ["League of Legends", "PUBG", "Maplestory", "처음으로"]
+      }
+  }
+EOD;
+    }
+}
     else if ( strcmp($content, "시간표") == false ) {
+        echo '{
+              "message" :
+              {
+                "text" : "시간표를 조회할 학급을 선택해줘^^7"
+              },
+              "keyboard" :
+              {
+                "type" : "buttons",
+                "buttons" : ["3-1", "3-5", "처음으로"]
+              }
+          }';
+        }
+    else if ( strcmp($content, "3-1") == false ) {
+      $logfile = fopen("log.txt", 'a') or die();
+      fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 1반 시간표를 조회했습니다.\n");
+      // 아이피, 검색 시간과 조회 내용이 기록됨
+      fclose($logfile);
       $table_today = "오늘 3학년 1반 기본 시간표야!\\n";
       $table[0] = "오늘은 수업이 없습니다."; // 일요일(0)
       $table[1] = "체육\\n도덕\\n도덕\\n영어\\n미술\\n미술"; // 월요일(1)
@@ -315,7 +408,40 @@ echo <<< EOD
 }
 EOD;
     }
+    else if ( strcmp($content, "3-5") == false ) {
+      $logfile = fopen("log.txt", 'a') or die();
+      fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 5반 시간표를 조회했습니다.\n");
+      // 아이피, 검색 시간과 조회 내용이 기록됨
+      fclose($logfile);
+      $table_today = "오늘 3학년 5반 기본 시간표야!\\n";
+      $table[0] = "오늘은 수업이 없습니다."; // 일요일(0)
+      $table[1] = "과학\\n영어\\n수학\\n국어\\n체육\\n도덕"; // 월요일(1)
+      $table[2] = "영어\\n국어\\n도덕\\n수학\\n과학\\n기가"; // 화요일(2)
+      $table[3] = "영어\\n국어\\n사회\\n과학\\n기가\\n기가"; // 수요일(3)
+      $table[4] = "체육\\n수학\\n국어\\n사회\\n과학\\n영어"; // 목요일(4)
+      $table[5] = "미술\\n미술\\n체육\\n역사\\n역사\\n진직"; // 금요일(5)
+      $table[6] = "오늘은 수업이 없습니다."; // 토요일(6)
+      $day = date('w');
+      $table_today = $table_today . $table[$day];
+echo <<< EOD
+{
+  "message" :
+  {
+      "text" : "$table_today"
+  },
+  "keyboard" :
+  {
+    "type" : "buttons",
+    "buttons" : ["급식", "날씨", "시간표", "게임 전적", "정보"]
+  }
+}
+EOD;
+    }
     else{
+        $logfile = fopen("log.txt", 'a') or die();
+        fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $content . "'(이)라고 입력하여 에러가 발생했습니다.\n");
+        // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
+        fclose($logfile);
         echo '{
               "message" :
               {
