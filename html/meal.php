@@ -2,6 +2,17 @@
 function getmeal($days)
 {
   $date = date("Y.m.d", strtotime("+$days days"));
+  if ($date == "2018.04.01"){
+    // 만우절 이스터에그 (April Fools' Day Easter Egg) - 2018
+    $final = "후라이드치킨한마리\\n";
+    $final = $final . "아이스크림(베스킨라빈스)\\n";
+    $final = $final . "불닭볶음면(삼양)\\n";
+    $final = $final . "모둠초밥\\n";
+    $final = $final . "포터하우스스테이크\\n";
+    $final = $final . "딸기크림프라푸치노(스타벅스)";
+    $return = array($date, $final); // 해당날짜, 급식메뉴
+    return $return;
+  }
   // 음수를 인자로 주는 것은 코딩이 귀찮아져 생략.
   // 그에 따라 <어제 급식> 메뉴는 삭제해버림
   header("Content-type: application/json; charset=UTF-8");        // json type and UTF-8 encoding
