@@ -1,29 +1,22 @@
 ﻿<?php
-    include("meal.php");
-    include("weather.php");
-    include("lol.php");
-    include("pubg.php");
-    include("maple.php");
+    include("functions/meal.php");
+    include("functions/weather.php");
+    include("functions/lol.php");
+    include("functions/pubg.php");
+    include("functions/maple.php");
+    include("functions/timetable.php");
+    include("functions/echoKakao.php");
     $data = json_decode(file_get_contents('php://input'), true);
     $content = $data["content"];
 
     if ( strcmp($content, "대화 시작") == false ) {
-        echo '{
-              "message" :
-              {
-                "text" : "안녕! 나는 은여울중학교 급식봇이야! ><",
-                "photo": {
-                    "url": "http://silvermealbot.dothome.co.kr/images/logo.jpg",
-                    "width": 600,
-                    "height": 600
-                }
-              },
-              "keyboard" :
-              {
-                "type" : "buttons",
-                "buttons" : ["급식", "날씨", "시간표", "게임 전적", "정보"]
-              }
-            }';
+        start_echo();
+            start_msg();
+                echo_text("안녕! 나는 은여울중학교 급식봇이야! ><", 1);
+                echo_photo("http://silvermealbot.dothome.co.kr/images/logo.jpg", 600, 600, 0);
+            end_msg(1);
+            keyboard_button(array("급식", "날씨", "시간표", "게임 전적", "정보"));
+        end_echo();
     }
     else if ( strcmp($content, "오늘 급식") == false ) {
         $final = getmeal(0);
@@ -31,69 +24,46 @@
         fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 오늘 급식을 조회했습니다.\n");
         // 아이피, 검색 시간과 조회 내용이 기록됨
         fclose($logfile);
-echo <<< EOD
-    {
-        "message": {
-            "text": "$final[0]\\n은여울중학교 급식 정보야!\\n\\n$final[1]"
-        },
-        "keyboard" :
-        {
-          "type" : "buttons",
-          "buttons" : ["오늘 급식", "내일 급식", "내일 모레 급식", "처음으로"]
-        }
-    }
-EOD;
+        start_echo();
+            start_msg();
+                echo_text($final[0] . "\\n은여울중학교 급식 정보야!\\n\\n" . $final[1], 0);
+            end_msg(1);
+            keyboard_button(array("오늘 급식", "내일 급식", "내일 모레 급식", "처음으로"));
+        end_echo();
     }
     else if ( strcmp($content, "내일 급식") == false ) {
-      $final = getmeal(1);
-      $logfile = fopen("log.txt", 'a') or die();
-      fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 급식을 조회했습니다.\n");
-      // 아이피, 검색 시간과 조회 내용이 기록됨
-      fclose($logfile);
-echo <<< EOD
-  {
-      "message": {
-          "text": "$final[0]\\n은여울중학교 급식이야!\\n\\n$final[1]"
-      },
-      "keyboard" :
-      {
-        "type" : "buttons",
-        "buttons" : ["오늘 급식", "내일 급식", "내일 모레 급식", "처음으로"]
-      }
-  }
-EOD;
+        $final = getmeal(1);
+        $logfile = fopen("log.txt", 'a') or die();
+        fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 급식을 조회했습니다.\n");
+        // 아이피, 검색 시간과 조회 내용이 기록됨
+        fclose($logfile);
+        start_echo();
+            start_msg();
+                echo_text($final[0] . "\\n은여울중학교 급식 정보야!\\n\\n" . $final[1], 0);
+            end_msg(1);
+            keyboard_button(array("오늘 급식", "내일 급식", "내일 모레 급식", "처음으로"));
+        end_echo();
     }
     else if ( strcmp($content, "내일 모레 급식") == false ) {
-      $final = getmeal(2);
-      $logfile = fopen("log.txt", 'a') or die();
-      fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 모레 급식을 조회했습니다.\n");
-      // 아이피, 검색 시간과 조회 내용이 기록됨
-      fclose($logfile);
-echo <<< EOD
-  {
-      "message": {
-          "text": "$final[0]\\n은여울중학교 급식이야!\\n\\n$final[1]"
-      },
-      "keyboard" :
-      {
-        "type" : "buttons",
-        "buttons" : ["오늘 급식", "내일 급식", "내일 모레 급식", "처음으로"]
-      }
-  }
-EOD;
+        $final = getmeal(2);
+        $logfile = fopen("log.txt", 'a') or die();
+        fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 모레 급식을 조회했습니다.\n");
+        // 아이피, 검색 시간과 조회 내용이 기록됨
+        fclose($logfile);
+        start_echo();
+            start_msg();
+                echo_text($final[0] . "\\n은여울중학교 급식 정보야!\\n\\n" . $final[1], 0);
+            end_msg(1);
+            keyboard_button(array("오늘 급식", "내일 급식", "내일 모레 급식", "처음으로"));
+        end_echo();
     }
     else if ( strcmp($content, "급식") == false ) {
-        echo '{
-              "message" :
-              {
-                "text" : "언제 급식을 알고 싶어?"
-              },
-              "keyboard" :
-              {
-                "type" : "buttons",
-                "buttons" : ["오늘 급식", "내일 급식", "내일 모레 급식", "처음으로"]
-              }
-            }';
+        start_echo();
+            start_msg();
+                echo_text("언제 급식을 알고 싶어?", 0);
+            end_msg(1);
+            keyboard_button(array("오늘 급식", "내일 급식", "내일 모레 급식", "처음으로"));
+        end_echo();
     }
     else if ( strcmp($content, "날씨") == false ) {
         $logfile = fopen("log.txt", 'a') or die();
@@ -128,109 +98,79 @@ EOD;
         else if (strcmp($weather, "눈") == false){
             $pic_url = $pic_url . "snow.jpg";
         }
-echo <<< EOD
-  {
-      "message": {
-          "text": "$final",
-          "photo": {
-              "url": "$pic_url",
-              "width": 600,
-              "height": 600
-          }
-      },
-      "keyboard" :
-      {
-        "type" : "buttons",
-        "buttons" : ["급식", "날씨", "시간표", "게임 전적", "정보"]
-      }
-  }
-EOD;
-}
+        start_echo();
+            start_msg();
+                echo_text($final, 1);
+                echo_photo($pic_url, 600, 600, 0);
+            end_msg(1);
+            keyboard_button(array("급식", "날씨", "시간표", "게임 전적", "정보"));
+        end_echo();
+    }
     else if ( strcmp($content, "정보") == false ) {
-        echo '{
-              "message" :
-              {
-                "text" : "아까도 말했듯이 나는 은여울중학교의 급식봇이야!\\n급식 데이터를 교육청 페이지에서 파싱해와서 알려주는거지.\\n내가 더 성장할 수 있도록 개발자 기부를 통해서 후원해주면 고맙겠엉!!\\n아 그리고 날씨, 시간표, 게임 등 다양한 데이터도 같이 제공해 주고 있어ㅎㅎ",
-                "photo": {
-                    "url": "http://silvermealbot.dothome.co.kr/images/gibu.jpg",
-                    "width": 600,
-                    "height": 650
-                }
-              },
-              "keyboard" :
-              {
-                "type" : "buttons",
-                "buttons" : ["기부하기", "처음으로"]
-              }
-            }';
+        start_echo();
+            start_msg();
+                echo_text("아까도 말했듯이 나는 은여울중학교의 급식봇이야!\\n" .
+                "급식 데이터를 교육청 페이지에서 파싱해와서 알려주는거지.\\n" .
+                "내가 더 성장할 수 있도록 개발자 기부를 통해서 후원해주면 고맙겠엉!!\\n" .
+                "아 그리고 날씨, 시간표, 게임 등 다양한 데이터도 같이 제공해 주고 있어ㅎㅎ", 1);
+                echo_photo("http://silvermealbot.dothome.co.kr/images/gibu.jpg", 600, 650, 0);
+            end_msg(1);
+            keyboard_button(array("기부하기", "처음으로"));
+        end_echo();
     }
     else if ( strcmp($content, "기부하기") == false ) {
-        echo '{
-              "message" :
-              {
-                "text" : "다양한 방법으로 나를 후원할 수 있어!!\\n계좌이체 : 국민은행 818702-00-018145 여준호\\n비트코인 : 1HnC2Y4tbNgcoErCcoZcmsnRzqcT5rdWon\\n이더리움 : 0x07B8CedbE8Ab83F06DFAdC39991910A4544dE3A1\\n비트코인 캐시 : qzuqmmmdxw5l00fjf7nzl7ur3jv2yr9vfv7f62trc0\\n다른 거래 수단을 원한다면 개발자에게 따로 말해주면 도와줄 수 있을 거야!"
-              },
-              "keyboard" :
-              {
-                "type" : "buttons",
-                "buttons" : ["급식", "날씨", "시간표", "게임 전적", "정보"]
-              }
-        }';
+        start_echo();
+            start_msg();
+                echo_text("다양한 방법으로 나를 후원할 수 있어!!\\n" .
+                "계좌이체 : 국민은행 818702-00-018145 여준호\\n" .
+                "비트코인 : 1HnC2Y4tbNgcoErCcoZcmsnRzqcT5rdWon\\n" .
+                "이더리움 : 0x07B8CedbE8Ab83F06DFAdC39991910A4544dE3A1\\n" .
+                "비트코인 캐시 : qzuqmmmdxw5l00fjf7nzl7ur3jv2yr9vfv7f62trc0\\n" .
+                "다른 거래 수단을 원한다면 개발자에게 따로 말해주면 도와줄 수 있을 거야!", 0);
+            end_msg(1);
+            keyboard_button(array("급식", "날씨", "시간표", "게임 전적", "정보"));
+        end_echo();
     }
-/*
-Bitcoin : 1HnC2Y4tbNgcoErCcoZcmsnRzqcT5rdWon
-Ether : 0x07B8CedbE8Ab83F06DFAdC39991910A4544dE3A1
-Bitcoin Cash : qzuqmmmdxw5l00fjf7nzl7ur3jv2yr9vfv7f62trc0
-*/
     else if ( strcmp($content, "처음으로") == false ) {
-        echo '{
-              "message" :
-              {
-                "text" : "처음으로 돌아왔습니다."
-              },
-              "keyboard" :
-              {
-                "type" : "buttons",
-                "buttons" : ["대화 시작"]
-              }
-        }';
+        start_echo();
+            start_msg();
+                echo_text("처음으로 돌아왔습니다.", 0);
+            end_msg(1);
+            keyboard_button(array("대화 시작"));
+        end_echo();
     }
     else if ( strcmp($content, "게임 전적") == false ) {
-        echo '{
-              "message" :
-              {
-                "text" : "게임 전적을 확인할 게임을 선택해줘~"
-              },
-              "keyboard" :
-              {
-                "type" : "buttons",
-                "buttons" : ["League of Legends", "PUBG", "Maplestory", "처음으로"]
-              }
-        }';
+        start_echo();
+            start_msg();
+                echo_text("게임 전적을 확인할 게임을 선택해줘~", 0);
+            end_msg(1);
+            keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
+        end_echo();
     }
     else if ( strcmp($content, "League of Legends") == false ) {
-        echo '{
-              "message" :
-              {
-                "text" : "\'롤\'과 소환사명을 함께 입력해줘~!\\n예시 : \'롤 은여울중학교\'"
-              }
-        }';
+        start_echo();
+            start_msg();
+                echo_text("'롤'과 소환사명을 함께 입력해줘~!\\n".
+                "예시 : '롤 은여울중학교'", 0);
+            end_msg(0);
+        end_echo();
     }
     else if ( strcmp($content, "PUBG") == false ) {
-        echo '{
-              "message" :
-              {
-                "text" : "배그 전적은 아직 개발중이야 제발 아무것도 누르지마\\n\'백\'과 배그닉넴을 함께 입력해줘~!\\n예시 : \'백 은여울중학교\'"
-              }
-        }';
+        start_echo();
+            start_msg();
+                echo_text("배그 전적은 아직 개발중이야 제발 아무것도 누르지마\\n".
+                "'백'과 배그닉넴을 함께 입력해줘~!\\n".
+                "예시 : '백 은여울중학교'", 0);
+            end_msg(0);
+        end_echo();
     }
     else if ( strcmp($content, "Maplestory") == false ) {
-        echo '{
-              "message" :
-              {
-                "text" : "\'멮\'과 캐릭터 이름을 함께 입력해줘~!\\n예시 : \'멮 은여울중학교\'"
-              }
-        }';
+        start_echo();
+            start_msg();
+                echo_text("'멮'과 캐릭터 이름을 함께 입력해줘~!\\n".
+                "예시 : '멮 은여울중학교'", 0);
+            end_msg(0);
+        end_echo();
     }
     else if ( strpos($content, "롤") !== false ) {
           $username = str_replace('롤 ', '', $content);
@@ -243,215 +183,117 @@ Bitcoin Cash : qzuqmmmdxw5l00fjf7nzl7ur3jv2yr9vfv7f62trc0
           $last = $return[1];
           $tier = $return[2];
           if ($last == ''){ // 유효한 소환사명이 아님 => message_button 표시 X
-echo <<< EOD
-    {
-        "message" :
-        {
-            "text" : "$record"
-        },
-        "keyboard" :
-        {
-          "type" : "buttons",
-          "buttons" : ["League of Legends", "PUBG", "Maplestory", "처음으로"]
-        }
-    }
-EOD;
+              start_echo();
+                  start_msg();
+                      echo_text("$record", 0);
+                  end_msg(1);
+                  keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
+              end_echo();
           }
           else{ // 유효한 소환사명 => message_button 표시 O
-            $pic_url = "http:\/\/silvermealbot.dothome.co.kr\/images\/\/tier\/";
-            $tier = strtolower($tier);
-            $tier = str_replace(' ', '_', $tier);
-            $pic_url = $pic_url . $tier . ".png";
-echo <<< EOD
-    {
-        "message" :
-        {
-            "text" : "$record",
-            "photo" : {
-                "url" : "$pic_url",
-                "width" : 600,
-                "height" : 600
-            },
-            "message_button": {
-                "label": "OP.GG에서 정보 확인",
-                "url": "$last"
-            }
-        },
-        "keyboard" :
-        {
-          "type" : "buttons",
-          "buttons" : ["League of Legends", "PUBG", "Maplestory", "처음으로"]
-        }
-    }
-EOD;
+              $pic_url = "http://silvermealbot.dothome.co.kr/images/tier/";
+              $tier = strtolower($tier);
+              $tier = str_replace(' ', '_', $tier);
+              $pic_url = $pic_url . $tier . ".png";
+              start_echo();
+                  start_msg();
+                      echo_text($record, 1);
+                      echo_photo($pic_url, 600, 600, 1);
+                      echo_msgbutton("OP.GG에서 정보 확인", $last, 0);
+                  end_msg(1);
+                  keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
+              end_echo();
           }
-/*echo <<< EOD
-{
-    "message" :
-    {
-        "text" : "$record\\n$last"
-    },
-    "keyboard" :
-    {
-      "type" : "buttons",
-      "buttons" : ["League of Legends", "PUBG", "처음으로"]
     }
-}
-EOD;*/
-}
     else if ( strpos($content, "백") !== false ) {
         $username = str_replace('백 ', '', $content);
         $logfile = fopen("log.txt", 'a') or die();
         fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 닉네임을 검색했습니다(배그).\n");
         // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
         fclose($logfile);
-echo <<< EOD
-{
-  "message" :
-  {
-      "text" : "개발중이야 제발 아무것도 누르지마"
-  },
-  "keyboard" :
-  {
-    "type" : "buttons",
-    "buttons" : ["League of Legends", "PUBG", "Maplestory", "처음으로"]
-  }
-}
-EOD;
-}
-else if ( strpos($content, "멮") !== false ) {
-    $username = str_replace('멮 ', '', $content);
-    $final = maplestory($username);
-    $pic_url = $final[0];
-    $logfile = fopen("log.txt", 'a') or die();
-    fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 캐릭터를 검색했습니다(메플).\n");
-    // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
-    fclose($logfile);
-    if ($final[1]=='') {
-      echo '{
-            "message" :
-            {
-              "text" : "검색결과가 없습니다."
-            },
-            "keyboard" :
-            {
-                  "type" : "buttons",
-                  "buttons" : ["League of Legends", "PUBG", "Maplestory", "처음으로"]
-            }
-      }';
+        start_echo();
+            start_msg();
+                echo_text("개발중이야 제발 아무것도 누르지마", 0);
+            end_msg(1);
+            keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
+        end_echo();
     }
-    else {
-      $result = "캐릭터 이름 : " . $final[1] . "\\n";
-      $result = $result . "직업 : " . $final[2] . "\\n";
-      $result = $result . "레벨 : " . $final[3] . "\\n";
-      $result = $result . "경험치 : " . $final[4] . "\\n";
-      $result = $result . "인기도 : " . $final[5];
-echo <<< EOD
-  {
-      "message" :
-      {
-          "text" : "$result",
-          "photo" : {
-              "url" : "$pic_url",
-              "width" : 600,
-              "height" : 600
-          }
-      },
-      "keyboard" :
-      {
-            "type" : "buttons",
-            "buttons" : ["League of Legends", "PUBG", "Maplestory", "처음으로"]
-      }
-  }
-EOD;
-    }
-}
-    else if ( strcmp($content, "시간표") == false ) {
-        echo '{
-              "message" :
-              {
-                "text" : "시간표를 조회할 학급을 선택해줘^^7"
-              },
-              "keyboard" :
-              {
-                "type" : "buttons",
-                "buttons" : ["3-1", "3-5", "처음으로"]
-              }
-          }';
-        }
-    else if ( strcmp($content, "3-1") == false ) {
+    else if ( strpos($content, "멮") !== false ) {
+      $username = str_replace('멮 ', '', $content);
+      $final = maplestory($username);
+      $pic_url = $final[0];
       $logfile = fopen("log.txt", 'a') or die();
-      fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 1반 시간표를 조회했습니다.\n");
-      // 아이피, 검색 시간과 조회 내용이 기록됨
+      fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 캐릭터를 검색했습니다(메플).\n");
+      // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
       fclose($logfile);
-      $table_today = "오늘 3학년 1반 기본 시간표야!\\n";
-      $table[0] = "오늘은 수업이 없습니다."; // 일요일(0)
-      $table[1] = "체육\\n도덕\\n도덕\\n영어\\n미술\\n미술"; // 월요일(1)
-      $table[2] = "수학\\n과학\\n국어\\n사회\\n역사\\n역사"; // 화요일(2)
-      $table[3] = "체육\\n기가\\n과학\\n국어\\n영어\\n진직"; // 수요일(3)
-      $table[4] = "기가\\n기가\\n수학\\n과학\\n영어\\n국어"; // 목요일(4)
-      $table[5] = "사회\\n영어\\n수학\\n국어\\n체육\\n과학"; // 금요일(5)
-      $table[6] = "오늘은 수업이 없습니다."; // 토요일(6)
-      $day = date('w');
-      $table_today = $table_today . $table[$day];
-echo <<< EOD
-{
-  "message" :
-  {
-      "text" : "$table_today"
-  },
-  "keyboard" :
-  {
-    "type" : "buttons",
-    "buttons" : ["급식", "날씨", "시간표", "게임 전적", "정보"]
-  }
-}
-EOD;
+      if ($final[1]=='') {
+        start_echo();
+            start_msg();
+                echo_text("검색결과가 없습니다.", 0);
+            end_msg(1);
+            keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
+        end_echo();
+      }
+      else {
+          $result = "캐릭터 이름 : " . $final[1] . "\\n" .
+          "직업 : " . $final[2] . "\\n" .
+          "레벨 : " . $final[3] . "\\n" .
+          "경험치 : " . $final[4] . "\\n" .
+          "인기도 : " . $final[5];
+          start_echo();
+              start_msg();
+                  echo_text($result, 1);
+                  echo_photo($pic_url, 600, 600, 0);
+              end_msg(1);
+              keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
+          end_echo();
+      }
+    }
+    else if ( strcmp($content, "시간표") == false ) {
+        start_echo();
+            start_msg();
+                echo_text("시간표를 조회할 학급을 선택해줘^^7", 0);
+            end_msg(1);
+            keyboard_button(array("3-1", "3-3", "3-5", "처음으로"));
+        end_echo();
+    }
+    else if ( strcmp($content, "3-1") == false ) {
+        $table_today = get_timetable_class(1, date('w'));
+        start_echo();
+            start_msg();
+                echo_text("$table_today", 0);
+            end_msg(1);
+            keyboard_button(array("급식", "날씨", "시간표", "게임 전적", "정보"));
+        end_echo();
+    }
+    else if ( strcmp($content, "3-3") == false ) {
+        $table_today = get_timetable_class(3, date('w'));
+        start_echo();
+            start_msg();
+                echo_text("$table_today", 0);
+            end_msg(1);
+            keyboard_button(array("급식", "날씨", "시간표", "게임 전적", "정보"));
+        end_echo();
     }
     else if ( strcmp($content, "3-5") == false ) {
-      $logfile = fopen("log.txt", 'a') or die();
-      fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 5반 시간표를 조회했습니다.\n");
-      // 아이피, 검색 시간과 조회 내용이 기록됨
-      fclose($logfile);
-      $table_today = "오늘 3학년 5반 기본 시간표야!\\n";
-      $table[0] = "오늘은 수업이 없습니다."; // 일요일(0)
-      $table[1] = "과학\\n영어\\n수학\\n국어\\n체육\\n도덕"; // 월요일(1)
-      $table[2] = "영어\\n국어\\n도덕\\n수학\\n과학\\n기가"; // 화요일(2)
-      $table[3] = "영어\\n국어\\n사회\\n과학\\n기가\\n기가"; // 수요일(3)
-      $table[4] = "체육\\n수학\\n국어\\n사회\\n과학\\n영어"; // 목요일(4)
-      $table[5] = "미술\\n미술\\n체육\\n역사\\n역사\\n진직"; // 금요일(5)
-      $table[6] = "오늘은 수업이 없습니다."; // 토요일(6)
-      $day = date('w');
-      $table_today = $table_today . $table[$day];
-echo <<< EOD
-{
-  "message" :
-  {
-      "text" : "$table_today"
-  },
-  "keyboard" :
-  {
-    "type" : "buttons",
-    "buttons" : ["급식", "날씨", "시간표", "게임 전적", "정보"]
-  }
-}
-EOD;
+        $table_today = get_timetable_class(5, date('w'));
+        start_echo();
+            start_msg();
+                echo_text("$table_today", 0);
+            end_msg(1);
+            keyboard_button(array("급식", "날씨", "시간표", "게임 전적", "정보"));
+        end_echo();
     }
     else{
         $logfile = fopen("log.txt", 'a') or die();
         fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $content . "'(이)라고 입력하여 에러가 발생했습니다.\n");
         // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
         fclose($logfile);
-        echo '{
-              "message" :
-              {
-                "text" : "에러가 발생햇오요,,,끼야악"
-              },
-              "keyboard" :
-              {
-                "type" : "buttons",
-                "buttons" : ["급식", "날씨", "시간표", "게임 전적", "정보"]
-              }
-        }';
+        start_echo();
+            start_msg();
+                echo_text("에러가 발생햇오요,,,끼야악", 0);
+            end_msg(1);
+            keyboard_button(array("급식", "날씨", "시간표", "게임 전적", "정보"));
+        end_echo();
     }
 ?>
