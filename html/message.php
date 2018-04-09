@@ -252,36 +252,138 @@
     else if ( strcmp($content, "시간표") == false ) {
         start_echo();
             start_msg();
-                echo_text("시간표를 조회할 학급을 선택해줘^^7", 0);
+                echo_text("언제 시간표가 필요해?", 0);
             end_msg(1);
-            keyboard_button(array("3-1", "3-3", "3-5", "처음으로"));
+            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
         end_echo();
     }
-    else if ( strcmp($content, "3-1") == false ) {
+    else if ( strcmp($content, "오늘 시간표") == false ) {
+        start_echo();
+            start_msg();
+                echo_text("시간표를 조회할 학급을 선택해줘^^7", 0);
+            end_msg(1);
+            keyboard_button(array("3-1 (오늘)", "3-3 (오늘)", "3-5 (오늘)", "처음으로"));
+        end_echo();
+    }
+    else if ( strcmp($content, "내일 시간표") == false ) {
+        start_echo();
+            start_msg();
+                echo_text("시간표를 조회할 학급을 선택해줘^^7", 0);
+            end_msg(1);
+            keyboard_button(array("3-1 (내일)", "3-3 (내일)", "3-5 (내일)", "처음으로"));
+        end_echo();
+    }
+    else if ( strcmp($content, "내일 모레 시간표") == false ) {
+        start_echo();
+            start_msg();
+                echo_text("시간표를 조회할 학급을 선택해줘^^7", 0);
+            end_msg(1);
+            keyboard_button(array("3-1 (내일 모레)", "3-3 (내일 모레)", "3-5 (내일 모레)", "처음으로"));
+        end_echo();
+    }
+    else if ( strcmp($content, "3-1 (오늘)") == false ) {
         $table_today = get_timetable_class(1, date('w'));
         start_echo();
             start_msg();
                 echo_text("$table_today", 0);
             end_msg(1);
-            keyboard_button(array("급식", "날씨", "시간표", "게임 전적", "정보"));
+            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
         end_echo();
     }
-    else if ( strcmp($content, "3-3") == false ) {
+    else if ( strcmp($content, "3-3 (오늘)") == false ) {
         $table_today = get_timetable_class(3, date('w'));
         start_echo();
             start_msg();
                 echo_text("$table_today", 0);
             end_msg(1);
-            keyboard_button(array("급식", "날씨", "시간표", "게임 전적", "정보"));
+            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
         end_echo();
     }
-    else if ( strcmp($content, "3-5") == false ) {
+    else if ( strcmp($content, "3-5 (오늘)") == false ) {
         $table_today = get_timetable_class(5, date('w'));
         start_echo();
             start_msg();
                 echo_text("$table_today", 0);
             end_msg(1);
-            keyboard_button(array("급식", "날씨", "시간표", "게임 전적", "정보"));
+            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
+        end_echo();
+    }
+    else if ( strcmp($content, "3-1 (내일)") == false ) {
+        $day = date('w')+1;
+        if ($day > 6){
+          $day -= 6;
+        }
+        $table_today = get_timetable_class(1, $day);
+        start_echo();
+            start_msg();
+                echo_text("$table_today", 0);
+            end_msg(1);
+            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
+        end_echo();
+    }
+    else if ( strcmp($content, "3-3 (내일)") == false ) {
+        $day = date('w')+1;
+        if ($day > 6){
+          $day -= 6;
+        }
+        $table_today = get_timetable_class(3, $day);
+        start_echo();
+            start_msg();
+                echo_text("$table_today", 0);
+            end_msg(1);
+            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
+        end_echo();
+    }
+    else if ( strcmp($content, "3-5 (내일)") == false ) {
+        $day = date('w')+1;
+        if ($day > 6){
+          $day -= 6;
+        }
+        $table_today = get_timetable_class(5, $day);
+        start_echo();
+            start_msg();
+                echo_text("$table_today", 0);
+            end_msg(1);
+            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
+        end_echo();
+    }
+    else if ( strcmp($content, "3-1 (내일 모레)") == false ) {
+        $day = date('w')+2;
+        if ($day > 6){
+          $day -= 6;
+        }
+        $table_today = get_timetable_class(1, $day);
+        start_echo();
+            start_msg();
+                echo_text("$table_today", 0);
+            end_msg(1);
+            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
+        end_echo();
+    }
+    else if ( strcmp($content, "3-3 (내일 모레)") == false ) {
+        $day = date('w')+2;
+        if ($day > 6){
+          $day -= 6;
+        }
+        $table_today = get_timetable_class(3, $day);
+        start_echo();
+            start_msg();
+                echo_text("$table_today", 0);
+            end_msg(1);
+            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
+        end_echo();
+    }
+    else if ( strcmp($content, "3-5 (내일 모레)") == false ) {
+        $day = date('w')+2;
+        if ($day > 6){
+          $day -= 6;
+        }
+        $table_today = get_timetable_class(5, $day);
+        start_echo();
+            start_msg();
+                echo_text("$table_today", 0);
+            end_msg(1);
+            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
         end_echo();
     }
     else{
