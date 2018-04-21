@@ -48,7 +48,7 @@
 
 ## 메이플스토리 캐릭터 정보 파싱
 
-<img src="images/screenshot_5.jpg" alt="screenshot 5" width="400"/><br>
+<img src="images/screenshot_5.jpg" alt="screenshot 5" width="350"/><br>
 
 - 메이플스토리 캐릭터 이름을 입력받아 캐릭터 이름, 직업, 레벨, 경험치, 인기도, 아바타를 출력함
 
@@ -56,7 +56,11 @@
 
 ## 은여울중학교 시간표 파싱
 
+![screenshot 6](images/screenshot_6.png)<br>
+
 - [컴시간알리미](http://comcigan.com/st/)에서 전학년/학급 시간표 파싱
+
+- 기본 시간표와 비교해서 변동된 과목은 별(\*)으로 표시해 줌
 
 - Special thanks to [@Devonnuri](https://github.com/Devonnuri) - [gongjujung-chatbot](https://github.com/Devonnuri/gongjujung-chatbot)
 
