@@ -1,13 +1,35 @@
 ﻿<?php
+    include("functions/echoKakao.php");
     include("functions/meal.php");
     include("functions/weather.php");
     include("functions/lol.php");
     include("functions/pubg.php");
     include("functions/maple.php");
     include("functions/timetable.php");
-    include("functions/echoKakao.php");
     $data = json_decode(file_get_contents('php://input'), true);
     $content = $data["content"];
+    $user_key = $data["user_key"];
+
+    //최우선적으로 처리되는 부분 => 1 depth 이상의 chat인지 확인
+    if (file_exists("userkey/" . $user_key . ".txt")) {
+        $keyfile = fopen("userkey/" . $user_key . ".txt", 'r') or die();
+        $last_content = fgets($keyfile);
+        $last_content = str_replace("\n", '', $last_content);
+        fclose($keyfile);
+        // 해당 user key를 가진 사람의 최근 채팅 기록을 확인
+        if (strcmp($last_content, "League of Legends") == false){
+            //이전에 리그오브레전드 전적을 조회하기로 했을 경우, $content는 검색하려는 소환사명일 것
+            lol($content);
+            unlink("userkey/" . $user_key . ".txt"); // user key 파일 삭제
+            return;
+        }
+        else if (strcmp($last_content, "Maplestory") == false){
+            //이전에 메이플스토리 스탯을 조회하기로 했을 경우, $content는 검색하려는 캐릭터 이름일 것
+            maple($content);
+            unlink("userkey/" . $user_key . ".txt"); // user key 파일 삭제
+            return;
+        }
+    }
 
     if ( strcmp($content, "대화 시작") == false ) {
         start_echo();
@@ -20,10 +42,10 @@
     }
     else if ( strcmp($content, "오늘 급식") == false ) {
         $final = getmeal(0);
-        $logfile = fopen("log.txt", 'a') or die();
-        fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 오늘 급식을 조회했습니다.\n");
-        // 아이피, 검색 시간과 조회 내용이 기록됨
-        fclose($logfile);
+        // $logfile = fopen("log.txt", 'a') or die();
+        // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 오늘 급식을 조회했습니다.\n");
+        // // 아이피, 검색 시간과 조회 내용이 기록됨
+        // fclose($logfile);
         start_echo();
             start_msg();
                 echo_text($final[0] . "\\n은여울중학교 급식 정보야!\\n\\n" . $final[1], 0);
@@ -33,10 +55,10 @@
     }
     else if ( strcmp($content, "내일 급식") == false ) {
         $final = getmeal(1);
-        $logfile = fopen("log.txt", 'a') or die();
-        fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 급식을 조회했습니다.\n");
-        // 아이피, 검색 시간과 조회 내용이 기록됨
-        fclose($logfile);
+        // $logfile = fopen("log.txt", 'a') or die();
+        // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 급식을 조회했습니다.\n");
+        // // 아이피, 검색 시간과 조회 내용이 기록됨
+        // fclose($logfile);
         start_echo();
             start_msg();
                 echo_text($final[0] . "\\n은여울중학교 급식 정보야!\\n\\n" . $final[1], 0);
@@ -46,10 +68,10 @@
     }
     else if ( strcmp($content, "내일 모레 급식") == false ) {
         $final = getmeal(2);
-        $logfile = fopen("log.txt", 'a') or die();
-        fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 모레 급식을 조회했습니다.\n");
-        // 아이피, 검색 시간과 조회 내용이 기록됨
-        fclose($logfile);
+        // $logfile = fopen("log.txt", 'a') or die();
+        // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 모레 급식을 조회했습니다.\n");
+        // // 아이피, 검색 시간과 조회 내용이 기록됨
+        // fclose($logfile);
         start_echo();
             start_msg();
                 echo_text($final[0] . "\\n은여울중학교 급식 정보야!\\n\\n" . $final[1], 0);
@@ -66,42 +88,15 @@
         end_echo();
     }
     else if ( strcmp($content, "날씨") == false ) {
-        $logfile = fopen("log.txt", 'a') or die();
-        fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 날씨를 조회했습니다.\n");
-        // 아이피, 검색 시간과 조회 내용이 기록됨
-        fclose($logfile);
-        $final = getweather();
-        $weather = $final[8];
-        $final = $final[0] . $final[1] . $final[2] . $final[3] . $final[4] . $final[5] . $final[6] . $final[7];
-        $final = "경기도 김포시 구래동 기준 날씨야~!\\n" . $final;
-        //  날씨
-        // ① 맑음 - sunny.jpg
-        // ② 구름 조금 - cloudy.jpg
-        // ③ 구름 많음 - cloudy.jpg
-        // ④ 흐림 - mist.jpg
-        // ⑤ 비 - rain.jpg
-        // ⑥ 눈/비 - rain.jpg
-        // ⑦ 눈 - snow.jpg
-        $pic_url = "http:\/\/silvermealbot.dothome.co.kr\/images\/";
-        if (strcmp($weather, "맑음") == false){
-            $pic_url = $pic_url . "sunny.jpg";
-        }
-        else if ( strpos($weather, "구름") !== false ){
-            $pic_url = $pic_url . "cloudy.jpg";
-        }
-        else if (strcmp($weather, "흐림") == false){
-            $pic_url = $pic_url . "mist.jpg";
-        }
-        else if ( strpos($weather, "비") !== false ){
-            $pic_url = $pic_url . "rain.jpg";
-        }
-        else if (strcmp($weather, "눈") == false){
-            $pic_url = $pic_url . "snow.jpg";
-        }
+        // $logfile = fopen("log.txt", 'a') or die();
+        // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 날씨를 조회했습니다.\n");
+        // // 아이피, 검색 시간과 조회 내용이 기록됨
+        // fclose($logfile);
+        $final = weather();
         start_echo();
             start_msg();
-                echo_text($final, 1);
-                echo_photo($pic_url, 600, 600, 0);
+                echo_text($final[0], 1);
+                echo_photo($final[1], 600, 600, 0);
             end_msg(1);
             keyboard_button(array("급식", "날씨", "시간표", "게임 전적", "정보"));
         end_echo();
@@ -148,249 +143,61 @@
         end_echo();
     }
     else if ( strcmp($content, "League of Legends") == false ) {
+        $keyfile = fopen("userkey/" . $user_key . ".txt", 'w') or die();
+        fwrite($keyfile, $content . "\n");
+        fclose($keyfile); // 해당 user key를 가진 사람의 최근 대화를 기록
         start_echo();
             start_msg();
-                echo_text("'롤'과 소환사명을 함께 입력해줘~!\\n".
-                "예시 : '롤 은여울중학교'", 0);
+                echo_text("검색할 소환사명을 입력해줘!", 0);
             end_msg(0);
         end_echo();
     }
     else if ( strcmp($content, "PUBG") == false ) {
         start_echo();
             start_msg();
-                echo_text("배그 전적은 아직 개발중이야 제발 아무것도 누르지마\\n".
-                "'백'과 배그닉넴을 함께 입력해줘~!\\n".
-                "예시 : '백 은여울중학교'", 0);
-            end_msg(0);
+                echo_text("배그 전적은 아직 개발중이야", 0);
+            end_msg(1);
+            keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
         end_echo();
     }
     else if ( strcmp($content, "Maplestory") == false ) {
+        $keyfile = fopen("userkey/" . $user_key . ".txt", 'w') or die();
+        fwrite($keyfile, $content . "\n");
+        fclose($keyfile); // 해당 user key를 가진 사람의 최근 대화를 기록
         start_echo();
             start_msg();
-                echo_text("'멮'과 캐릭터 이름을 함께 입력해줘~!\\n".
-                "예시 : '멮 은여울중학교'", 0);
+                echo_text("검색할 캐릭터 이름을 입력해줘!", 0);
             end_msg(0);
         end_echo();
-    }
-    else if ( strpos($content, "롤") !== false ) {
-          $username = str_replace('롤 ', '', $content);
-          $return = lol_record($username);
-          $logfile = fopen("log.txt", 'a') or die();
-          fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 소환사를 검색했습니다(롤).\n");
-          // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
-          fclose($logfile);
-          $record = $return[0];
-          $last = $return[1];
-          $tier = $return[2];
-          if ($last == ''){ // 유효한 소환사명이 아님 => message_button 표시 X
-              start_echo();
-                  start_msg();
-                      echo_text("$record", 0);
-                  end_msg(1);
-                  keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
-              end_echo();
-          }
-          else{ // 유효한 소환사명 => message_button 표시 O
-              $pic_url = "http://silvermealbot.dothome.co.kr/images/tier/";
-              $tier = strtolower($tier);
-              $tier = str_replace(' ', '_', $tier);
-              $pic_url = $pic_url . $tier . ".png";
-              start_echo();
-                  start_msg();
-                      echo_text($record, 1);
-                      echo_photo($pic_url, 600, 600, 1);
-                      echo_msgbutton("OP.GG에서 정보 확인", $last, 0);
-                  end_msg(1);
-                  keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
-              end_echo();
-          }
-    }
-    else if ( strpos($content, "백") !== false ) {
-        $username = str_replace('백 ', '', $content);
-        $logfile = fopen("log.txt", 'a') or die();
-        fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 닉네임을 검색했습니다(배그).\n");
-        // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
-        fclose($logfile);
-        start_echo();
-            start_msg();
-                echo_text("개발중이야 제발 아무것도 누르지마", 0);
-            end_msg(1);
-            keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
-        end_echo();
-    }
-    else if ( strpos($content, "멮") !== false ) {
-      $username = str_replace('멮 ', '', $content);
-      $final = maplestory($username);
-      $pic_url = $final[0];
-      $logfile = fopen("log.txt", 'a') or die();
-      fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 캐릭터를 검색했습니다(메플).\n");
-      // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
-      fclose($logfile);
-      if ($final[1]=='') {
-        start_echo();
-            start_msg();
-                echo_text("검색결과가 없습니다.", 0);
-            end_msg(1);
-            keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
-        end_echo();
-      }
-      else {
-          $result = "캐릭터 이름 : " . $final[1] . "\\n" .
-          "직업 : " . $final[2] . "\\n" .
-          "레벨 : " . $final[3] . "\\n" .
-          "경험치 : " . $final[4] . "\\n" .
-          "인기도 : " . $final[5];
-          start_echo();
-              start_msg();
-                  echo_text($result, 1);
-                  echo_photo($pic_url, 600, 600, 0);
-              end_msg(1);
-              keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
-          end_echo();
-      }
     }
     else if ( strcmp($content, "시간표") == false ) {
         start_echo();
             start_msg();
-                echo_text("언제 시간표가 필요해?", 0);
+                echo_text("몇 학년이야?", 0);
             end_msg(1);
-            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
+            keyboard_button(array("1학년", "2학년", "3학년", "처음으로"));
         end_echo();
     }
-    else if ( strcmp($content, "오늘 시간표") == false ) {
-        start_echo();
-            start_msg();
-                echo_text("시간표를 조회할 학급을 선택해줘^^7", 0);
-            end_msg(1);
-            keyboard_button(array("3-1 (오늘)", "3-3 (오늘)", "3-5 (오늘)", "처음으로"));
-        end_echo();
+    else if ( strcmp($content, "1학년") == false || strcmp($content, "2학년") == false || strcmp($content, "3학년") == false) {
+        keyboard_grade($content);
     }
-    else if ( strcmp($content, "내일 시간표") == false ) {
-        start_echo();
-            start_msg();
-                echo_text("시간표를 조회할 학급을 선택해줘^^7", 0);
-            end_msg(1);
-            keyboard_button(array("3-1 (내일)", "3-3 (내일)", "3-5 (내일)", "처음으로"));
-        end_echo();
+    else if ( (strpos($content, "학년") !== false) && (strpos($content, "(") == false)) {
+        keyboard_class($content);
     }
-    else if ( strcmp($content, "내일 모레 시간표") == false ) {
-        start_echo();
-            start_msg();
-                echo_text("시간표를 조회할 학급을 선택해줘^^7", 0);
-            end_msg(1);
-            keyboard_button(array("3-1 (내일 모레)", "3-3 (내일 모레)", "3-5 (내일 모레)", "처음으로"));
-        end_echo();
+    else if ( (strpos($content, "반 (오늘)") !== false) ) {
+        keyboard_date($content, 0);
     }
-    else if ( strcmp($content, "3-1 (오늘)") == false ) {
-        $table_today = get_timetable_class(1, date('w'));
-        start_echo();
-            start_msg();
-                echo_text("$table_today", 0);
-            end_msg(1);
-            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
-        end_echo();
+    else if ( (strpos($content, "반 (내일)") !== false) ) {
+        keyboard_date($content, 1);
     }
-    else if ( strcmp($content, "3-3 (오늘)") == false ) {
-        $table_today = get_timetable_class(3, date('w'));
-        start_echo();
-            start_msg();
-                echo_text("$table_today", 0);
-            end_msg(1);
-            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
-        end_echo();
-    }
-    else if ( strcmp($content, "3-5 (오늘)") == false ) {
-        $table_today = get_timetable_class(5, date('w'));
-        start_echo();
-            start_msg();
-                echo_text("$table_today", 0);
-            end_msg(1);
-            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
-        end_echo();
-    }
-    else if ( strcmp($content, "3-1 (내일)") == false ) {
-        $day = date('w')+1;
-        if ($day > 6){
-          $day -= 6;
-        }
-        $table_today = get_timetable_class(1, $day);
-        start_echo();
-            start_msg();
-                echo_text("$table_today", 0);
-            end_msg(1);
-            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
-        end_echo();
-    }
-    else if ( strcmp($content, "3-3 (내일)") == false ) {
-        $day = date('w')+1;
-        if ($day > 6){
-          $day -= 6;
-        }
-        $table_today = get_timetable_class(3, $day);
-        start_echo();
-            start_msg();
-                echo_text("$table_today", 0);
-            end_msg(1);
-            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
-        end_echo();
-    }
-    else if ( strcmp($content, "3-5 (내일)") == false ) {
-        $day = date('w')+1;
-        if ($day > 6){
-          $day -= 6;
-        }
-        $table_today = get_timetable_class(5, $day);
-        start_echo();
-            start_msg();
-                echo_text("$table_today", 0);
-            end_msg(1);
-            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
-        end_echo();
-    }
-    else if ( strcmp($content, "3-1 (내일 모레)") == false ) {
-        $day = date('w')+2;
-        if ($day > 6){
-          $day -= 6;
-        }
-        $table_today = get_timetable_class(1, $day);
-        start_echo();
-            start_msg();
-                echo_text("$table_today", 0);
-            end_msg(1);
-            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
-        end_echo();
-    }
-    else if ( strcmp($content, "3-3 (내일 모레)") == false ) {
-        $day = date('w')+2;
-        if ($day > 6){
-          $day -= 6;
-        }
-        $table_today = get_timetable_class(3, $day);
-        start_echo();
-            start_msg();
-                echo_text("$table_today", 0);
-            end_msg(1);
-            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
-        end_echo();
-    }
-    else if ( strcmp($content, "3-5 (내일 모레)") == false ) {
-        $day = date('w')+2;
-        if ($day > 6){
-          $day -= 6;
-        }
-        $table_today = get_timetable_class(5, $day);
-        start_echo();
-            start_msg();
-                echo_text("$table_today", 0);
-            end_msg(1);
-            keyboard_button(array("오늘 시간표", "내일 시간표", "내일 모레 시간표", "처음으로"));
-        end_echo();
+    else if ( (strpos($content, "반 (모레)") !== false) ) {
+        keyboard_date($content, 2);
     }
     else{
-        $logfile = fopen("log.txt", 'a') or die();
-        fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $content . "'(이)라고 입력하여 에러가 발생했습니다.\n");
-        // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
-        fclose($logfile);
+        // $logfile = fopen("log.txt", 'a') or die();
+        // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $content . "'(이)라고 입력하여 에러가 발생했습니다.\n");
+        // // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
+        // fclose($logfile);
         start_echo();
             start_msg();
                 echo_text("에러가 발생햇오요,,,끼야악", 0);

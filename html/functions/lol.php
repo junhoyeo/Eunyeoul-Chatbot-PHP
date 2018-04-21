@@ -135,4 +135,36 @@ function lol_record($username){
   $return[2] = $rank; // 티어
   return $return;
 }
+function lol($username){
+  $return = lol_record($username);
+  // $logfile = fopen("log.txt", 'a') or die();
+  // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 소환사를 검색했습니다(롤).\n");
+  // // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
+  // fclose($logfile);
+  $record = $return[0];
+  $last = $return[1];
+  $tier = $return[2];
+  if ($last == ''){ // 유효한 소환사명이 아님 => message_button 표시 X
+      start_echo();
+          start_msg();
+              echo_text("$record", 0);
+          end_msg(1);
+          keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
+      end_echo();
+  }
+  else{ // 유효한 소환사명 => message_button 표시 O
+      $pic_url = "http://silvermealbot.dothome.co.kr/images/tier/";
+      $tier = strtolower($tier);
+      $tier = str_replace(' ', '_', $tier);
+      $pic_url = $pic_url . $tier . ".png";
+      start_echo();
+          start_msg();
+              echo_text($record, 1);
+              echo_photo($pic_url, 600, 600, 1);
+              echo_msgbutton("OP.GG에서 정보 확인", $last, 0);
+          end_msg(1);
+          keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
+      end_echo();
+  }
+}
  ?>

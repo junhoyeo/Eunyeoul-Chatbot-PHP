@@ -60,4 +60,34 @@ function maplestory($username){
   $final[5] = $pop; // 인기도
   return $final;
 }
+function maple($username){
+  $final = maplestory($username);
+  $pic_url = $final[0];
+  // $logfile = fopen("log.txt", 'a') or die();
+  // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 캐릭터를 검색했습니다(메플).\n");
+  // // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
+  // fclose($logfile);
+  if ($final[1]=='') {
+    start_echo();
+        start_msg();
+            echo_text("검색결과가 없습니다.", 0);
+        end_msg(1);
+        keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
+    end_echo();
+  }
+  else {
+      $result = "캐릭터 이름 : " . $final[1] . "\\n" .
+      "직업 : " . $final[2] . "\\n" .
+      "레벨 : " . $final[3] . "\\n" .
+      "경험치 : " . $final[4] . "\\n" .
+      "인기도 : " . $final[5];
+      start_echo();
+          start_msg();
+              echo_text($result, 1);
+              echo_photo($pic_url, 600, 600, 0);
+          end_msg(1);
+          keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
+      end_echo();
+  }
+}
 ?>

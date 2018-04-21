@@ -101,4 +101,38 @@ for ($i=0; $i < 8; $i++) {
   echo $array[$i];
 }*/
 // usage는 위와 같음
+
+function weather(){
+  $final = getweather();
+  $weather = $final[8];
+  $final = $final[0] . $final[1] . $final[2] . $final[3] . $final[4] . $final[5] . $final[6] . $final[7];
+  $final = "경기도 김포시 구래동 기준 날씨야~!\\n" . $final;
+  //  날씨
+  // ① 맑음 - sunny.jpg
+  // ② 구름 조금 - cloudy.jpg
+  // ③ 구름 많음 - cloudy.jpg
+  // ④ 흐림 - mist.jpg
+  // ⑤ 비 - rain.jpg
+  // ⑥ 눈/비 - rain.jpg
+  // ⑦ 눈 - snow.jpg
+  $pic_url = "http:\/\/silvermealbot.dothome.co.kr\/images\/";
+  if (strcmp($weather, "맑음") == false){
+      $pic_url = $pic_url . "sunny.jpg";
+  }
+  else if ( strpos($weather, "구름") !== false ){
+      $pic_url = $pic_url . "cloudy.jpg";
+  }
+  else if (strcmp($weather, "흐림") == false){
+      $pic_url = $pic_url . "mist.jpg";
+  }
+  else if ( strpos($weather, "비") !== false ){
+      $pic_url = $pic_url . "rain.jpg";
+  }
+  else if (strcmp($weather, "눈") == false){
+      $pic_url = $pic_url . "snow.jpg";
+  }
+  $return[0] = $final;
+  $return[1] = $pic_url;
+  return $return;
+}
 ?>
