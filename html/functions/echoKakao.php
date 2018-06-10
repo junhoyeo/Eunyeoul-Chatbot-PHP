@@ -63,4 +63,10 @@
     echo $keyboard;
     return;
   }
+  function writelog($user_key, $message){
+    $logfile = fopen("log.txt", 'a') or die();
+    fwrite($logfile, $user_key . " | " . date("Y.m.d H:i:s",time()) . ' ' . $message . "\n");
+    // user key, 검색 시간과 조회 내용이 기록됨
+    fclose($logfile);
+  }
 ?>

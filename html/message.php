@@ -20,18 +20,21 @@
         if (strcmp($last_content, "League of Legends") == false){
             //이전에 리그오브레전드 전적을 조회하기로 했을 경우, $content는 검색하려는 소환사명일 것
             lol($content);
+            writelog($user_key, "사용자가 " . $content . "의 리그오브레전드 전적을 확인했습니다.");            
             unlink("userkey/" . $user_key . ".txt"); // user key 파일 삭제
             return;
         }
         else if (strcmp($last_content, "Maplestory") == false){
             //이전에 메이플스토리 스탯을 조회하기로 했을 경우, $content는 검색하려는 캐릭터 이름일 것
             maple($content);
+            writelog($user_key, "사용자가 " . $content . "의 메이플스토리 스탯을 확인했습니다.");                        
             unlink("userkey/" . $user_key . ".txt"); // user key 파일 삭제
             return;
         }
     }
 
     if ( strcmp($content, "대화 시작") == false ) {
+        writelog($user_key, "사용자가 대화를 시작했습니다.");
         start_echo();
             start_msg();
                 echo_text("안녕! 나는 은여울중학교 급식봇이야! ><", 1);
@@ -41,6 +44,7 @@
         end_echo();
     }
     else if ( strcmp($content, "오늘 급식") == false ) {
+        writelog($user_key, "사용자가 오늘 급식을 조회했습니다.");
         $final = getmeal(0);
         // $logfile = fopen("log.txt", 'a') or die();
         // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 오늘 급식을 조회했습니다.\n");
@@ -54,6 +58,7 @@
         end_echo();
     }
     else if ( strcmp($content, "내일 급식") == false ) {
+        writelog($user_key, "사용자가 내일 급식을 조회했습니다.");        
         $final = getmeal(1);
         // $logfile = fopen("log.txt", 'a') or die();
         // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 급식을 조회했습니다.\n");
@@ -67,6 +72,7 @@
         end_echo();
     }
     else if ( strcmp($content, "내일 모레 급식") == false ) {
+        writelog($user_key, "사용자가 내일 모레 급식을 조회했습니다.");        
         $final = getmeal(2);
         // $logfile = fopen("log.txt", 'a') or die();
         // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 모레 급식을 조회했습니다.\n");
@@ -88,6 +94,7 @@
         end_echo();
     }
     else if ( strcmp($content, "날씨") == false ) {
+        writelog($user_key, "사용자가 오늘 날씨를 조회했습니다.");        
         // $logfile = fopen("log.txt", 'a') or die();
         // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 날씨를 조회했습니다.\n");
         // // 아이피, 검색 시간과 조회 내용이 기록됨
@@ -102,6 +109,7 @@
         end_echo();
     }
     else if ( strcmp($content, "정보") == false ) {
+        writelog($user_key, "사용자가 정보를 확인했습니다.");        
         start_echo();
             start_msg();
                 echo_text("아까도 말했듯이 나는 은여울중학교의 급식봇이야!\\n" .
@@ -114,6 +122,7 @@
         end_echo();
     }
     else if ( strcmp($content, "기부하기") == false ) {
+        writelog($user_key, "사용자가 기부 수단을 확인했습니다.");        
         start_echo();
             start_msg();
                 echo_text("다양한 방법으로 나를 후원할 수 있어!!\\n" .
@@ -153,6 +162,7 @@
         end_echo();
     }
     else if ( strcmp($content, "PUBG") == false ) {
+        writelog($user_key, "사용자가 배틀그라운드 전적 조회를 시도했습니다.");        
         start_echo();
             start_msg();
                 echo_text("배그 전적은 아직 개발중이야", 0);
@@ -185,13 +195,13 @@
         keyboard_class($content);
     }
     else if ( (strpos($content, "반 (오늘)") !== false) ) {
-        keyboard_date($content, 0);
+        keyboard_date($user_key, $content, 0);
     }
     else if ( (strpos($content, "반 (내일)") !== false) ) {
-        keyboard_date($content, 1);
+        keyboard_date($user_key, $content, 1);
     }
     else if ( (strpos($content, "반 (모레)") !== false) ) {
-        keyboard_date($content, 2);
+        keyboard_date($user_key, $content, 2);
     }
     else{
         // $logfile = fopen("log.txt", 'a') or die();
