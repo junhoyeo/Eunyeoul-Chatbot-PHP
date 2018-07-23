@@ -17,7 +17,7 @@
         }
         else { // 평일
             $count = 0;
-            $filename = "./timetable2018-1/grade" . $grade . "/" . $class . ".data";
+            $filename = "./timetable-data/grade" . $grade . "/" . $class . ".data";
             $handle = fopen($filename, "r");
             while (($line = fgets($handle)) !== false) {
                 if ($day*6-7 < $count && $count < $day*6){
@@ -30,82 +30,6 @@
         }
         return $table_today;
     }
-    /*function get_timetable($grade, $class, $day){
-        header('Content-type: application/json; charset=UTF-8');
-        require("Snoopy.class.php");
-        $URL = "http://comcigan.com:4082/st";
-        $snoopy = new Snoopy; // snoopy 생성
-        $snoopy->fetch($URL);
-        preg_match("/window\.localStorage;.*var [A-z0-9ㄱ-ㅎ가-힣$_]+\s*=\s*'([\w_-]+)'/", $snoopy->results, $code);
-        // https://github.com/Devonnuri/gongjujung-chatbot/blob/master/src/Parser.js 참고
-        $URL = "http://comcigan.com:4082/$code[1]?MTc1OV81MzUxMF8xXzA=";
-        $snoopy->fetch($URL);
-        $jsonData = stripslashes(html_entity_decode($snoopy->results));
-        $json=json_decode(trim($jsonData),true);
-        // print_r($json); echo "\n";
-        $teacher; //교사명을 저장할 배열
-        $teacher_idx=$json['교사수']; //교사 수
-        $count = 0;
-        foreach ($json['성명'] as $key => $value) {
-            //교사명
-            if ($count <= $teacher_idx){
-              $teacher[$count] = $value;
-            }
-            $count++;
-        }
-        $subject; //과목명을 저장할 배열
-        $subject_idx=$json['과목명'][0]; // 과목 수
-        $count = 0;
-        foreach ($json['과목명'] as $key => $value) {
-            //과목명
-            if ($count <= $subject_idx){
-              $subject[$count] = $value;
-            }
-            $count++;
-        }
-        global $class_num;
-        $count = 0;
-        foreach ($json['학급수'] as $key => $value) {
-            //과목명
-            if ($count <= 3){
-              $class_num[$count] = $value;
-            }
-            $count++;
-        }
-        $table_ord; //원래 시간표 인덱스를 저장할 배열(변경 x)
-        $count = 0;
-        foreach ($json['시간표'][$grade][$class][$day] as $key => $value) {
-            // echo $value%100 . "\n"; //과목 인덱스
-            // echo $value/100 . "\n"; //교사명 인덱스
-            if (0<$count && 7>$count) {
-              $table_ord[$count] = $value%100;
-            }
-            $count++;
-        }
-        $count = 0; $idx = 0; // count(1~6), idx(0~5)
-        $return;
-        if ($day>5 || $day==0){ //범위 초과
-          $return = "시간표가 없습니다.";
-        }
-        else{
-            $final; // 요청받은 날짜의 시간표 + 변경된 시간표가 있으면 표시
-            foreach ($json['학급시간표'][$grade][$class][$day] as $key => $value) {
-                if (0<$count && 7>$count) {
-                  if ($value%100 !== $table_ord[$count]){
-                    $final[$idx] = '*'; // 시간표 변경시 '*'으로 표시
-                  }
-                  $final[$idx] = $final[$idx] . $subject[$value%100];
-                  $final[$idx] = $final[$idx] . '(' . $teacher[$value/100] . ")";
-                  if ($count !== 6) $final[$idx] = $final[$idx] . "\\n";
-                }
-                $count++; $idx++;
-            }
-            foreach ($final as $key => $value) {
-                $return = $return . $value;
-            }
-        }
-        return $return;
-    }*/
     // usage:
     // get_timetable(3, 1, 3); //3학년 1반의 수요일(3) 시간표
     function keyboard_grade($content){
