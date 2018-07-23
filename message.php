@@ -46,10 +46,6 @@
     else if ( strcmp($content, "오늘 급식") == false ) {
         writelog($user_key, "사용자가 오늘 급식을 조회했습니다.");
         $final = getmeal(0);
-        // $logfile = fopen("log.txt", 'a') or die();
-        // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 오늘 급식을 조회했습니다.\n");
-        // // 아이피, 검색 시간과 조회 내용이 기록됨
-        // fclose($logfile);
         start_echo();
             start_msg();
                 echo_text($final[0] . "\\n은여울중학교 급식 정보야!\\n\\n" . $final[1], 0);
@@ -60,10 +56,6 @@
     else if ( strcmp($content, "내일 급식") == false ) {
         writelog($user_key, "사용자가 내일 급식을 조회했습니다.");        
         $final = getmeal(1);
-        // $logfile = fopen("log.txt", 'a') or die();
-        // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 급식을 조회했습니다.\n");
-        // // 아이피, 검색 시간과 조회 내용이 기록됨
-        // fclose($logfile);
         start_echo();
             start_msg();
                 echo_text($final[0] . "\\n은여울중학교 급식 정보야!\\n\\n" . $final[1], 0);
@@ -74,10 +66,6 @@
     else if ( strcmp($content, "내일 모레 급식") == false ) {
         writelog($user_key, "사용자가 내일 모레 급식을 조회했습니다.");        
         $final = getmeal(2);
-        // $logfile = fopen("log.txt", 'a') or die();
-        // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 내일 모레 급식을 조회했습니다.\n");
-        // // 아이피, 검색 시간과 조회 내용이 기록됨
-        // fclose($logfile);
         start_echo();
             start_msg();
                 echo_text($final[0] . "\\n은여울중학교 급식 정보야!\\n\\n" . $final[1], 0);
@@ -95,10 +83,6 @@
     }
     else if ( strcmp($content, "날씨") == false ) {
         writelog($user_key, "사용자가 오늘 날씨를 조회했습니다.");        
-        // $logfile = fopen("log.txt", 'a') or die();
-        // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " 날씨를 조회했습니다.\n");
-        // // 아이피, 검색 시간과 조회 내용이 기록됨
-        // fclose($logfile);
         $final = weather();
         start_echo();
             start_msg();
@@ -204,10 +188,6 @@
         keyboard_date($user_key, $content, 2);
     }
     else{
-        // $logfile = fopen("log.txt", 'a') or die();
-        // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $content . "'(이)라고 입력하여 에러가 발생했습니다.\n");
-        // // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
-        // fclose($logfile);
         start_echo();
             start_msg();
                 echo_text("에러가 발생햇오요,,,끼야악", 0);

@@ -137,10 +137,6 @@ function lol_record($username){
 }
 function lol($username){
   $return = lol_record($username);
-  // $logfile = fopen("log.txt", 'a') or die();
-  // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 소환사를 검색했습니다(롤).\n");
-  // // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
-  // fclose($logfile);
   $record = $return[0];
   $last = $return[1];
   $tier = $return[2];

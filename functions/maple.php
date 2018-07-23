@@ -63,10 +63,6 @@ function maplestory($username){
 function maple($username){
   $final = maplestory($username);
   $pic_url = $final[0];
-  // $logfile = fopen("log.txt", 'a') or die();
-  // fwrite($logfile, $_SERVER['REMOTE_ADDR'] . " / " . date("Y.m.d H:i:s",time()) . " '" . $username . "' 캐릭터를 검색했습니다(메플).\n");
-  // // 아이피, 검색 시간과 기록이 로그 파일에 기록됨
-  // fclose($logfile);
   if ($final[1]=='') {
     start_echo();
         start_msg();
