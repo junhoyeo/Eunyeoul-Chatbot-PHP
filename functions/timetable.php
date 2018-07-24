@@ -5,10 +5,6 @@
     function get_timetable($user_key, $grade, $class, $day){
         writelog($user_key, "사용자가 " . $day . "일 뒤의 " . $grade . "학년 " . $class . "반 기본 시간표를 확인했습니다.");                    
         $table_today = $grade . "학년 " . $class . "반 기본 시간표야!\\n";
-        $day = date('w') + $day; // 요일
-        if ($day > 6){
-            $day = $day - 7;
-        }
         // 만약 요일이 일요일(0)이거나 토요일(6)이면 수업 없음을 출력하고 끝내면 되고
         // 아니라면 파일에서 해당 요일의 기본 시간표를 가져와야 함
         // n요일이라고 하면 n*6-6+1줄에서 n*6줄까지 읽어오면 됨
