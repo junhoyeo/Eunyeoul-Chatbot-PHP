@@ -108,19 +108,19 @@ function weather(){
   $final = $final[0] . $final[1] . $final[2] . $final[3] . $final[4] . $final[5] . $final[6] . $final[7];
   $final = "경기도 김포시 구래동 기준 날씨야~!\\n" . $final;
   //  날씨
-  // ① 맑음 - sunny.jpg
-  // ② 구름 조금 - cloudy.jpg
-  // ③ 구름 많음 - cloudy.jpg
+  // ① 맑음 - sun.jpg
+  // ② 구름 조금 - cloud.jpg
+  // ③ 구름 많음 - cloud.jpg
   // ④ 흐림 - mist.jpg
   // ⑤ 비 - rain.jpg
   // ⑥ 눈/비 - rain.jpg
   // ⑦ 눈 - snow.jpg
   $pic_url = "http:\/\/silvermealbot.dothome.co.kr\/images\/";
   if (strcmp($weather, "맑음") == false){
-      $pic_url = $pic_url . "sunny.jpg";
+      $pic_url = $pic_url . "sun.jpg";
   }
   else if ( strpos($weather, "구름") !== false ){
-      $pic_url = $pic_url . "cloudy.jpg";
+      $pic_url = $pic_url . "cloud.jpg";
   }
   else if (strcmp($weather, "흐림") == false){
       $pic_url = $pic_url . "mist.jpg";
