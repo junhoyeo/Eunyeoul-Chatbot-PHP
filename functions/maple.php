@@ -64,26 +64,44 @@ function maple($username){
   $final = maplestory($username);
   $pic_url = $final[0];
   if ($final[1]=='') {
-    start_echo();
-        start_msg();
-            echo_text("검색결과가 없습니다.", 0);
-        end_msg(1);
-        keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
-    end_echo();
+    echo json_encode(
+        array(
+            'message' => array(
+                'text' => '검색결과가 없습니다.'
+            ),
+            'keyboard' => array(
+                'type' => 'buttons',
+                'buttons' => array(
+                    'League of Legends', 'PUBG', 'Maplestory', '처음으로'
+                )
+            )
+        )
+    );
   }
   else {
-      $result = "캐릭터 이름 : " . $final[1] . "\\n" .
-      "직업 : " . $final[2] . "\\n" .
-      "레벨 : " . $final[3] . "\\n" .
-      "경험치 : " . $final[4] . "\\n" .
-      "인기도 : " . $final[5];
-      start_echo();
-          start_msg();
-              echo_text($result, 1);
-              echo_photo($pic_url, 600, 600, 0);
-          end_msg(1);
-          keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
-      end_echo();
+    $result = "캐릭터 이름 : " . $final[1] . "\\n" .
+    "직업 : " . $final[2] . "\\n" .
+    "레벨 : " . $final[3] . "\\n" .
+    "경험치 : " . $final[4] . "\\n" .
+    "인기도 : " . $final[5];
+    echo json_encode(
+        array(
+            'message' => array(
+                'text' => $result,
+                'photo' => array(
+                    'url' => $pic_url,
+                    'width' => 600,
+                    'height' => 600
+                )
+            ),
+            'keyboard' => array(
+                'type' => 'buttons',
+                'buttons' => array(
+                    'League of Legends', 'PUBG', 'Maplestory', '처음으로'
+                )
+            )
+        )
+    );
   }
 }
 ?>

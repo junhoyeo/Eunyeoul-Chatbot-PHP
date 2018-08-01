@@ -141,26 +141,47 @@ function lol($username){
   $last = $return[1];
   $tier = $return[2];
   if ($last == ''){ // 유효한 소환사명이 아님 => message_button 표시 X
-      start_echo();
-          start_msg();
-              echo_text("$record", 0);
-          end_msg(1);
-          keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
-      end_echo();
+    echo json_encode(
+        array(
+            'message' => array(
+                'text' => $record
+            ),
+            'keyboard' => array(
+                'type' => 'buttons',
+                'buttons' => array(
+                    'League of Legends', 'PUBG', 'Maplestory', '처음으로'
+                )
+            )
+        )
+    );
   }
   else{ // 유효한 소환사명 => message_button 표시 O
-      $pic_url = "http://silvermealbot.dothome.co.kr/images/tier/";
-      $tier = strtolower($tier);
-      $tier = str_replace(' ', '_', $tier);
-      $pic_url = $pic_url . $tier . ".png";
-      start_echo();
-          start_msg();
-              echo_text($record, 1);
-              echo_photo($pic_url, 600, 600, 1);
-              echo_msgbutton("OP.GG에서 정보 확인", $last, 0);
-          end_msg(1);
-          keyboard_button(array("League of Legends", "PUBG", "Maplestory", "처음으로"));
-      end_echo();
+    $pic_url = "http://silvermealbot.dothome.co.kr/images/tier/";
+    $tier = strtolower($tier);
+    $tier = str_replace(' ', '_', $tier);
+    $pic_url = $pic_url . $tier . ".png";
+    echo json_encode(
+        array(
+            'message' => array(
+                'text' => $record,
+                'photo' => array(
+                    'url' => $pic_url,
+                    'width' => 600,
+                    'height' => 600
+                ),
+                'message_button' => array(
+                    'label' => 'OP.GG에서 정보 확인',
+                    'url' => $last
+                )
+            ),
+            'keyboard' => array(
+                'type' => 'buttons',
+                'buttons' => array(
+                    'League of Legends', 'PUBG', 'Maplestory', '처음으로'
+                )
+            )
+        )
+    );
   }
 }
  ?>

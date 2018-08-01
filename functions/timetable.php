@@ -40,12 +40,17 @@
             $count++;
         }
         $buttons[$count++] = "처음으로";
-        start_echo();
-            start_msg();
-                echo_text("학급을 선택해줘!\\n(가끔씩 서버 에러가 뜰 수 있으니까 주의해줘)", 0);
-            end_msg(1);
-            keyboard_button($buttons);
-        end_echo();
+        echo json_encode(
+            array(
+                'message' => array(
+                    'text' => '학급을 선택해줘!\\n(가끔씩 서버 에러가 뜰 수 있으니까 주의해줘)'
+                ),
+                'keyboard' => array(
+                    'type' => 'buttons',
+                    'buttons' => $buttons
+                )
+            )
+        );
     }
     function keyboard_class($content){
         // $content에서 숫자(학년+반) 추출, 날짜별 키보드 출력
@@ -56,12 +61,17 @@
         $buttons[1] = $grade . "학년 " . $class . "반 (내일)";
         $buttons[2] = $grade . "학년 " . $class . "반 (모레)";
         $buttons[3] = "처음으로";
-        start_echo();
-            start_msg();
-                echo_text("언제 시간표가 필요해?", 0);
-            end_msg(1);
-            keyboard_button($buttons);
-        end_echo();
+        echo json_encode(
+            array(
+                'message' => array(
+                    'text' => '언제 시간표가 필요해?'
+                ),
+                'keyboard' => array(
+                    'type' => 'buttons',
+                    'buttons' => $buttons
+                )
+            )
+        );
     }
     function keyboard_date($user_key, $content, $date){
         preg_match_all('/[[:alnum:]]/', $content, $match);
@@ -84,11 +94,16 @@
         $buttons[1] = $grade . "학년 " . $class . "반 (내일)";
         $buttons[2] = $grade . "학년 " . $class . "반 (모레)";
         $buttons[3] = "처음으로";
-        start_echo();
-            start_msg();
-                echo_text($result, 0);
-            end_msg(1);
-            keyboard_button($buttons);
-        end_echo();
+        echo json_encode(
+            array(
+                'message' => array(
+                    'text' => $result
+                ),
+                'keyboard' => array(
+                    'type' => 'buttons',
+                    'buttons' => $buttons
+                )
+            )
+        );
     }
 ?>

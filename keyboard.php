@@ -1,7 +1,6 @@
 ﻿<?php
-    echo '
-    {
-        "type": "buttons",
-        "buttons": ["대화 시작"]
-    }';
+    echo json_encode(array(
+        'type' => 'buttons',
+        'buttons' => array('대화 시작')
+    ))
 ?>
